@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "nodemon --watch './**/*.ts' --exec 'ts-node' test/index.ts",
     "dev": "nodemon --watch './**/*.ts' --exec 'ts-node' index.ts"
   },
   "repository": {
@@ -19,9 +19,10 @@
   },
   "homepage": "https://github.com/rizqyn9/R-Bot#readme",
   "dependencies": {
-    "@open-wa/wa-automate": "^4.19.3",
+    "@open-wa/wa-automate": "^4.20.4",
     "@open-wa/wa-decrypt": "^4.2.1",
     "@types/figlet": "^1.5.4",
+    "@types/redis": "^2.8.31",
     "chalk": "^4.1.2",
     "death": "^1.1.0",
     "dotenv": "^10.0.0",
@@ -29,6 +30,8 @@
     "figlet": "^1.5.2",
     "fs": "^0.0.1-security",
     "mime-types": "^2.1.32",
-    "mongoose": "^6.0.1"
+    "mongoose": "^6.0.1",
+    "redis": "^3.1.2",
+    "util": "^0.12.4"
   }
 }

@@ -1,28 +1,66 @@
 import dotenv from 'dotenv'
-import {Client, create, Message} from '@open-wa/wa-automate'
-import {enumCommand, FigletChalkStarter, Logger} from './utils'
+import {Client, create, STATE} from '@open-wa/wa-automate'
+import {FigletChalkStarter, Logger} from './utils'
 import {connectMongoDB, initConfiguration} from './config'
+import {messageRouter} from "./message/routing"
 
 dotenv.config()
 
 const Start = async (RBot :Client) => {
+    // region Logger Init
     FigletChalkStarter("R-Dev")
-    console.log("start")
-    RBot.onAnyMessage(function(p1: Message){
-        console.log(p1)
-    }, undefined)
+    Logger.dev("Made by R-Dev Github : rizqyn9")
+    Logger.bot("Have a nice day Rizyqy")
+    Logger.bot("R-Bot already for my Jobs")
+    // endregion logger
+
+    // region MongoDB Initialization
+    // Connect to DB
+    // @ts-ignore
+    await connectMongoDB(process.env.MONGODB_URI).then(()=> {
+        Logger.custom("Database connected", "[MongoDB]", 183)
+    }).catch((err : string) => {
+        Logger.error(err)
+        process.exit()
+    })
+    //endregion
+
+    // region Redis Initialization
+
+    //endregion
+    // region State Handler
+    RBot.onStateChanged((state) => {
+        Logger.warn(`state : ${state}`)
+        // Handle on change state Conf, Disconn
+        if(state == STATE.CONFLICT
+            || state == STATE.UNLAUNCHED
+            || state == STATE.DISCONNECTED
+        ){
+            Logger.warn("Try to reconnecting")
+            RBot.forceRefocus().catch((err) => {
+                Logger.error(err)
+            })
+        }
+    })
+    // endregion
+
+
+    RBot.onMessage((msg)=>{
+        Logger.bot("new msg")
+        messageRouter(RBot, msg);
+    })
 }
 
-// @ts-ignore
-create(initConfiguration(true, Start))
-    .then((rizqy : Client) =>
-        // @ts-ignore
-        connectMongoDB(process.env.MONGODB_URI).then(()=> {
-            Logger.success({command: enumCommand.BOT, msg: "Database connected"})
-            Start(rizqy)
-        }).catch((err : string) => {
-            Logger.error({command : enumCommand.ERR ,msg : err})
-            process.exit()
-        })
-    )
-    .catch((err : any) => Logger.error({command : enumCommand.ERR, msg:err}))
+//region Launch
+const Launch = async () => {
+    try {
+        const client = await create(initConfiguration(true, Start))
+        await Start(client)
+    } catch (e) {
+        Logger.error(`Err Launch : ${e}`)
+    }
+}
+
+Launch()
+//endregion Launch
+

@@ -1,36 +1,56 @@
-import Chalk,{Color} from 'chalk'
+import Chalk from 'chalk'
 
 export enum enumCommand {
     DEV = "[DEV]",
     BOT = "[RBOT]",
     ERR = "[ERR]",
-    DONE = "[DONE]",
     WARN = "[WARN]",
     SPAM = "[SPAM]",
     GROUP = "[GROUP]",
-    PROCESS = "[PROCESS]"
+    PRCS = "[PRCS]",
+    DONE = "[DONE]",
+    EMPTY = "",
+    CSTM="[CSTM]"
 }
 
 interface IMessageLogger {
-    command? : enumCommand | string,
-    msg? : any
+    cmd? : enumCommand | string | null,
+    msg? : any,
+    color? : string
 }
 
-export const Logger = {
-    error : (msg : IMessageLogger) => {
-        return PrintLogger(Chalk.redBright(`${msg.command ? msg.command + "\t" : ""}${msg.msg}`))
-    },
-    warn : (msg : IMessageLogger) =>{
-        return PrintLogger(Chalk.yellowBright(`${msg.command ? msg.command + "\t" : ""}${msg.msg}`))
-    },
-    success : (msg : IMessageLogger) =>{
-        return PrintLogger(Chalk.greenBright(`${msg.command ? msg.command + "\t" : ""}${msg.msg}`))
-    },
-    default : () => {
+/**
+ * For documentation ansi256 color index
+ * https://en.wikipedia.org/wiki/ANSI_escape_code#8-bit
+ */
 
+export const Logger = {
+    // Default Config Logger
+    error : ( msg:any ,cmd :  string = enumCommand.ERR, color= 196) => {
+        return PrintLogger(color, cmd, msg)
+    },
+    warn : ( msg:any ,cmd :  string = enumCommand.WARN, color= 226) => {
+        return PrintLogger(color, cmd, msg)
+    },
+    dev : ( msg:any ,cmd :  string = enumCommand.DEV, color= 147) => {
+        return PrintLogger(color, cmd, msg)
+    },
+    process : ( msg:any ,cmd :  string = enumCommand.PRCS, color= 117) => {
+        return PrintLogger(color, cmd, msg)
+    },
+    done : ( msg:any ,cmd :  string = enumCommand.DONE, color= 118) => {
+        return PrintLogger(color, cmd, msg)
+    },
+    bot : ( msg:any ,cmd :  string = enumCommand.BOT, color= 123) => {
+        return PrintLogger(color, cmd, msg)
+    },
+    custom : ( msg:any ,cmd :  string = enumCommand.CSTM, color= 201) => {
+        return PrintLogger(color, cmd, msg)
     }
 }
 
-const PrintLogger = (res : any) => {
-    return console.log((res))
+
+const PrintLogger = (color: number, cmd : string | undefined | null, msg : any) => {
+    let print = cmd ? `${cmd}\t${msg}` : msg
+    return console.log(Chalk.ansi256(color)(print))
 }
