@@ -1,29 +1,55 @@
 import {Client, Message} from '@open-wa/wa-automate'
 import {typeConfigBot, ConfigBot} from '../config'
-import {Logger} from "../utils";
+import {IPrefix, Logger} from "../utils";
+import {typeUserSchema} from "../databases/model";
+import {typeGroupSchema} from "../databases/model/group.model";
 
-export const messageRouter = (Rbot : Client, msg : Message) => {
+/**
+ * - Validate prefix
+ * - Authorization Users / Groups
+ * @param Rbot
+ * @param msg
+ */
+export const messageRouter = async (Rbot : Client, msg : Message) => {
     try {
-        const {
-            chatId,
-            body,
-            id
-        } : Message = msg
-        let isCmd = ConfigBot.prefixAllowed.includes(body.charAt(0))
-                    ? body.charAt(0)
-                    : null
-        if(!isCmd) return Rbot.sendText(chatId, `Sorry i dont understand`)
-        Rbot.sendText(chatId, `Your message registered in my databases.\nYour ID = ${id} \nIm being development`)
+        let prefix : IPrefix = await validPrefix(msg.body)
+        if(prefix.prefix == null) return;
 
-        // Rbot.sendText(chatId, "RBot In development")
+        console.log(msg.chatId)
+        let dataAuthorized = await authorizing(msg)
+
+        // Rbot.sendText(msg.chatId, `Your prefix is valid`)
 
     } catch (e) {
         Logger.error(`messageRouter ${e}`)
     }
 }
 
-const handleCommand = (cmd : string) :string|null => {
-    let isCmd = ConfigBot.prefixAllowed.includes(cmd.charAt(0))
-    if(!isCmd) return null
-    return cmd.charAt(0)
+const authorizing = async (msg: Message) => {
+    try {
+        // hmget redis
+
+    }catch (e) {
+
+    }
 }
+
+
+// region validate prefix
+/**
+ * Just clearance whitespace, get prefix and set to prefix Interface
+ * @param target
+ * @param validate
+ */
+const validPrefix = (target : string, validate :Array<string> = ConfigBot.prefixAllowed) : IPrefix=> {
+    let res : IPrefix = {prefix : null}
+    target = target.trim()
+    for (let i = 0; i < validate.length; i++ ){
+        if( target.startsWith(validate[i])) {
+            res.prefix = validate[i]
+            break;
+        }
+    }
+    return res
+}
+//endregion

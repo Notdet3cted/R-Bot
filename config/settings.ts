@@ -17,8 +17,8 @@ const initConfiguration = (headles = false, start:any):ConfigObject => {
         restartOnCrash: start,
         cacheEnabled: false,
         useChrome: false,
-        logConsoleErrors:true,
-        logConsole:true,
+        // logConsoleErrors:true,
+        // logConsole:true,
         killProcessOnBrowserClose: true,
         throwErrorOnTosBlock: false,
         chromiumArgs: [

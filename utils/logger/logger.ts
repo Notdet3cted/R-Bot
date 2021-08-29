@@ -10,7 +10,9 @@ export enum enumCommand {
     PRCS = "[PRCS]",
     DONE = "[DONE]",
     EMPTY = "",
-    CSTM="[CSTM]"
+    CSTM="[CSTM]",
+    RDIS="[REDIS]",
+    MNGO="[MONGODB]"
 }
 
 interface IMessageLogger {
@@ -29,7 +31,7 @@ export const Logger = {
     error : ( msg:any ,cmd :  string = enumCommand.ERR, color= 196) => {
         return PrintLogger(color, cmd, msg)
     },
-    warn : ( msg:any ,cmd :  string = enumCommand.WARN, color= 226) => {
+    warn : ( msg:any ,cmd :  string = enumCommand.WARN, color= 208) => {
         return PrintLogger(color, cmd, msg)
     },
     dev : ( msg:any ,cmd :  string = enumCommand.DEV, color= 147) => {
@@ -42,6 +44,9 @@ export const Logger = {
         return PrintLogger(color, cmd, msg)
     },
     bot : ( msg:any ,cmd :  string = enumCommand.BOT, color= 123) => {
+        return PrintLogger(color, cmd, msg)
+    },
+    redisDone : (msg:any ,cmd :  string = enumCommand.RDIS, color: number = 200) => {
         return PrintLogger(color, cmd, msg)
     },
     custom : ( msg:any ,cmd :  string = enumCommand.CSTM, color= 201) => {

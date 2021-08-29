@@ -1,5 +1,4 @@
 import Mongoose from 'mongoose'
-import {Logger} from '../utils'
 
 const connectMongoDB = (URI:string) :Promise<any> => {
     return Mongoose.connect(URI, {

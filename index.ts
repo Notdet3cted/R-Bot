@@ -1,7 +1,7 @@
 import dotenv from 'dotenv'
 import {Client, create, STATE} from '@open-wa/wa-automate'
 import {FigletChalkStarter, Logger} from './utils'
-import {connectMongoDB, initConfiguration} from './config'
+import {connectMongoDB, initConfiguration, redisClient} from './config'
 import {messageRouter} from "./message/routing"
 
 dotenv.config()
@@ -25,9 +25,6 @@ const Start = async (RBot :Client) => {
     })
     //endregion
 
-    // region Redis Initialization
-
-    //endregion
     // region State Handler
     RBot.onStateChanged((state) => {
         Logger.warn(`state : ${state}`)
